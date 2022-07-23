@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libretto.WPF", "Source\Libretto.WPF\Libretto.WPF.csproj", "{1B4BE05A-FF8F-4EEF-9987-1DFB904641BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libretto.UnitTests", "Source\Libretto.UnitTests\Libretto.UnitTests.csproj", "{17552BC4-3338-4826-9257-FC1B62BD3443}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libretto.UnitTests", "Tests\Libretto.UnitTests\Libretto.UnitTests.csproj", "{17552BC4-3338-4826-9257-FC1B62BD3443}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
