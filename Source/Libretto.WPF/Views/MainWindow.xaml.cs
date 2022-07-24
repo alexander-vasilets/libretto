@@ -3,6 +3,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using ViewModels;
 
 [ExcludeFromCodeCoverage]
@@ -12,6 +14,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        DataContext = new MainViewModel();
+        DataContext = App.Current.Services.GetService<BookViewModel>();
     }
 }
