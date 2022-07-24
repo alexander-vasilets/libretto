@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿namespace Libretto.WPF;
 
-namespace Libretto;
+using System.Windows;
 
 public partial class App : Application
 {
