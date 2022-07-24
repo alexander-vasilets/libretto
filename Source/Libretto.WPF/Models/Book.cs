@@ -1,5 +1,6 @@
 ﻿namespace Libretto.WPF.Models;
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -7,6 +8,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 [ExcludeFromCodeCoverage]
 public class Book : ObservableObject
 {
+    private Guid id = Guid.NewGuid();
+    public Guid Id => id;
+
     private string title = string.Empty;
     public string Title
     {

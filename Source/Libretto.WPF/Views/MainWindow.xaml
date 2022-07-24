@@ -1,10 +1,14 @@
 ﻿<Window x:Class="Libretto.WPF.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
 
         Title="Libretto"
         Width="800" Height="600"
         MinWidth="400" MinHeight="300">
+    <Window.Resources>
+        <BitmapImage x:Key="trashBin" UriSource="../Resources/trashBin.png"/>
+    </Window.Resources>
     <DockPanel>
         <!-- Book list -->
         <ScrollViewer DockPanel.Dock="Top" Margin="5">
@@ -16,18 +20,29 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderThickness="1.0" CornerRadius="1.0" BorderBrush="Black" Padding="5" Margin="5">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Title: " FontWeight="Bold" />
-                                    <TextBlock Text="{Binding Title}" />
+                        <DockPanel>
+                            <Image DockPanel.Dock="Left" Source="{StaticResource trashBin}" Width="32" Height="32" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   RenderOptions.BitmapScalingMode="Fant">
+                                <behaviors:Interaction.Triggers>
+                                    <behaviors:EventTrigger EventName="PreviewMouseDown">
+                                        <behaviors:InvokeCommandAction Command="{Binding DataContext.DeleteBookCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding Id}"/>
+                                    </behaviors:EventTrigger>
+                                </behaviors:Interaction.Triggers>
+                            </Image>
+                            <Border BorderThickness="1.0" CornerRadius="1.0" BorderBrush="Black" Padding="5" Margin="5">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Title: " FontWeight="Bold" />
+                                        <TextBlock Text="{Binding Title}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Author: " FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AuthorName}" />
+                                    </StackPanel>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Author: " FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding AuthorName}" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
+                            </Border>
+                        </DockPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
