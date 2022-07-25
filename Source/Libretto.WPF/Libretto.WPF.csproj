@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\error.png" />
     <None Remove="Resources\trashBin.png" />
   </ItemGroup>
 
@@ -18,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\error.png" />
     <Resource Include="Resources\trashBin.png" />
   </ItemGroup>
 

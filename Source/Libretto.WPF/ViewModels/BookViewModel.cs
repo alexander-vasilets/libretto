@@ -20,10 +20,34 @@ public class BookViewModel : ObservableObject
     public Book CurrentBook
     {
         get => currentBook;
-        private set => SetProperty(ref currentBook, value);
+        private set
+        {
+            if (SetProperty(ref currentBook, value))
+            {
+                SetProperty(ref canAdd, !value.HasErrors, nameof(CanAdd));
+                SetProperty(ref canUpdate, selectedBook != null && canAdd, nameof(CanUpdate));
+            }
+        }
     }
 
     private Book? selectedBook = null;
+    public Book? SelectedBook
+    {
+        get => selectedBook;
+        private set
+        {
+            if (SetProperty(ref selectedBook, value))
+            {
+                SetProperty(ref canUpdate, value != null, nameof(CanUpdate));
+            }
+        }
+    }
+
+    private bool canUpdate;
+    public bool CanUpdate => canUpdate;
+
+    private bool canAdd;
+    public bool CanAdd => canAdd;
 
     private RelayCommand<Book>? selectUnselectBookCommand;
     public RelayCommand<Book>? SelectUnselectBookCommand
@@ -59,6 +83,7 @@ public class BookViewModel : ObservableObject
         collection.SeedData();
 
         CurrentBook = new();
+        CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
 
         SelectUnselectBookCommand = new(book => SelectUnselectBook(book!));
         DeleteBookCommand = new(bookId => collection.Delete(bookId));
@@ -66,29 +91,38 @@ public class BookViewModel : ObservableObject
         UpdateBookCommand = new(UpdateBook);
     }
 
+    private void OnCurrentBookErrorsChanged(object? sender, System.ComponentModel.DataErrorsChangedEventArgs e)
+    {
+        SetProperty(ref canAdd, !CurrentBook.HasErrors, nameof(CanAdd));
+        SetProperty(ref canUpdate, selectedBook != null && canAdd, nameof(CanUpdate));
+    }
+
     private void SelectUnselectBook(Book clickedBook)
     {
         // No book is selected
-        if (selectedBook == null)
+        if (SelectedBook == null)
         {
-            selectedBook = clickedBook;
-            selectedBook.IsSelected = true;
-            CurrentBook = new(selectedBook);
+            SelectedBook = clickedBook;
+            SelectedBook.IsSelected = true;
+            CurrentBook = new(SelectedBook);
+            CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
             return;
         }
         // A book is selected and it is this one
-        if (selectedBook.Id == clickedBook.Id)
+        if (SelectedBook.Id == clickedBook.Id)
         {
-            selectedBook.IsSelected = false;
-            selectedBook = null;
+            SelectedBook.IsSelected = false;
+            SelectedBook = null;
             CurrentBook = new();
+            CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
             return;
         }
         // A book is selected but it is another book
-        selectedBook.IsSelected = false;
-        selectedBook = clickedBook;
-        selectedBook.IsSelected = true;
+        SelectedBook.IsSelected = false;
+        SelectedBook = clickedBook;
+        SelectedBook.IsSelected = true;
         CurrentBook = new(clickedBook);
+        CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
     }
 
     private void AddBook()
@@ -96,11 +130,13 @@ public class BookViewModel : ObservableObject
         var newBook = new Book() { Title = CurrentBook.Title, AuthorName = CurrentBook.AuthorName };
         collection.Add(newBook);
         CurrentBook = new();
+        CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
     }
 
     private void UpdateBook()
     {
         collection.Update(CurrentBook);
         CurrentBook = new();
+        CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
     }
 }

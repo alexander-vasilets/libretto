@@ -4,13 +4,24 @@
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
 
         Title="Libretto"
-        SizeToContent="WidthAndHeight">
+        SizeToContent="WidthAndHeight"
+        MinWidth="600" MinHeight="450">
     <Window.Resources>
         <BitmapImage x:Key="trashBin" UriSource="../Resources/trashBin.png"/>
+        <BitmapImage x:Key="error" UriSource="../Resources/error.png"/>
+        <ControlTemplate x:Key="validationTemplate">
+            <DockPanel>
+                <Image Source="{StaticResource error}" Width="24" Height="24" RenderOptions.BitmapScalingMode="Fant" 
+                       DockPanel.Dock="Left" Margin="0 0 10 0" ToolTip="{Binding ErrorContent}"/>
+                <Border BorderBrush="Red" BorderThickness="1.0">
+                    <AdornedElementPlaceholder />
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
     </Window.Resources>
     <DockPanel>
         <!-- Book list -->
-        <ScrollViewer DockPanel.Dock="Top" Margin="5" MaxHeight="400" MinWidth="600">
+        <ScrollViewer DockPanel.Dock="Top" Margin="5" MaxHeight="400">
             <ItemsControl x:Name="bookList" ItemsSource="{Binding Books}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -65,21 +76,23 @@
         </ScrollViewer>
         
         <!-- Book info -->
-        <Border DockPanel.Dock="Bottom" BorderThickness="1.0" CornerRadius="2.0" BorderBrush="Black" Padding="5" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <StackPanel Orientation="Vertical" DataContext="{Binding CurrentBook}" HorizontalAlignment="Center">
-                <StackPanel Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
-                    <Label Content="_Title: " Target="{Binding ElementName=titleTextBox}" Margin="0 0 10 0" Width="100"/>
-                    <TextBox x:Name="titleTextBox" Width="200" Text="{Binding Title}"/>
+        <Border DockPanel.Dock="Bottom" BorderThickness="1.0" CornerRadius="2.0" BorderBrush="Black" Padding="5" Margin="5" VerticalAlignment="Bottom" MaxWidth="800">
+            <DockPanel>
+                <StackPanel Orientation="Vertical" DockPanel.Dock="Top" DataContext="{Binding CurrentBook, ValidatesOnNotifyDataErrors=False}">
+                    <DockPanel Margin="0 10 0 0">
+                        <Label Content="_Title" Target="{Binding ElementName=titleTextBox}" Width="100"/>
+                        <TextBox x:Name="titleTextBox" Text="{Binding Title}" VerticalContentAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" />
+                    </DockPanel>
+                    <DockPanel Margin="0 10 0 0">
+                        <Label Content="_Author" Target="{Binding ElementName=authorTextBox}" Width="100"/>
+                        <TextBox x:Name="authorTextBox" Text="{Binding AuthorName}"  VerticalContentAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}"/>
+                    </DockPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
-                    <Label Content="_Author: " Target="{Binding ElementName=authorTextBox}" Margin="0 0 10 0" Width="100"/>
-                    <TextBox x:Name="authorTextBox" Width="200" Text="{Binding AuthorName}"/>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0 10 0 10" HorizontalAlignment="Center">
+                    <Button Content="Update" Command="{Binding UpdateBookCommand}" Margin="0 0 10 0" IsEnabled="{Binding CanUpdate}"/>
+                    <Button Content="Add" Command="{Binding AddBookCommand}" IsEnabled="{Binding CanAdd}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
-                    <Button Content="Update" Command="{Binding DataContext.UpdateBookCommand, RelativeSource={RelativeSource AncestorType=Window}}" Margin="0 0 10 0"/>
-                    <Button Content="Add" Command="{Binding DataContext.AddBookCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                </StackPanel>
-            </StackPanel>
+            </DockPanel>
         </Border>
     </DockPanel>
 </Window>
