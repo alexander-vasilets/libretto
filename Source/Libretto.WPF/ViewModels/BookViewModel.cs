@@ -23,25 +23,13 @@ public class BookViewModel : ObservableObject
         private set => SetProperty(ref currentBook, value);
     }
 
-    private bool bookSelected;
-    public bool BookSelected
-    {
-        get => bookSelected;
-        set => SetProperty(ref bookSelected, value);
-    }
+    private Book? selectedBook = null;
 
-    private RelayCommand<Book>? selectBookCommand;
-    public RelayCommand<Book>? SelectBookCommand
+    private RelayCommand<Book>? selectUnselectBookCommand;
+    public RelayCommand<Book>? SelectUnselectBookCommand
     {
-        get => selectBookCommand;
-        set => SetProperty(ref selectBookCommand, value);
-    }
-
-    private RelayCommand? unselectBookCommand;
-    public RelayCommand? UnselectBookCommand
-    {
-        get => unselectBookCommand;
-        set => SetProperty(ref unselectBookCommand, value);
+        get => selectUnselectBookCommand;
+        set => SetProperty(ref selectUnselectBookCommand, value);
     }
 
     private RelayCommand<Guid>? deleteBookCommand;
@@ -72,23 +60,35 @@ public class BookViewModel : ObservableObject
 
         CurrentBook = new();
 
-        SelectBookCommand = new(book => SelectBook(book!));
-        UnselectBookCommand = new(UnselectBook);
+        SelectUnselectBookCommand = new(book => SelectUnselectBook(book!));
         DeleteBookCommand = new(bookId => collection.Delete(bookId));
         AddBookCommand = new(AddBook);
         UpdateBookCommand = new(UpdateBook);
     }
 
-    private void SelectBook(Book prototype)
+    private void SelectUnselectBook(Book clickedBook)
     {
-        CurrentBook = new Book(prototype!);
-        BookSelected = true;
-    }
-
-    private void UnselectBook()
-    {
-        BookSelected = false;
-        CurrentBook = new();
+        // No book is selected
+        if (selectedBook == null)
+        {
+            selectedBook = clickedBook;
+            selectedBook.IsSelected = true;
+            CurrentBook = new(selectedBook);
+            return;
+        }
+        // A book is selected and it is this one
+        if (selectedBook.Id == clickedBook.Id)
+        {
+            selectedBook.IsSelected = false;
+            selectedBook = null;
+            CurrentBook = new();
+            return;
+        }
+        // A book is selected but it is another book
+        selectedBook.IsSelected = false;
+        selectedBook = clickedBook;
+        selectedBook.IsSelected = true;
+        CurrentBook = new(clickedBook);
     }
 
     private void AddBook()

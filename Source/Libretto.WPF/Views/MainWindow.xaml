@@ -30,9 +30,21 @@
                                 </behaviors:Interaction.Triggers>
                             </Image>
                             <Border BorderThickness="1.0" CornerRadius="2.0" BorderBrush="Black" Padding="5" Margin="5">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Background" Value="AliceBlue"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
                                 <behaviors:Interaction.Triggers>
                                     <behaviors:EventTrigger EventName="MouseDown">
-                                        <behaviors:InvokeCommandAction Command="{Binding DataContext.SelectBookCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                                        <behaviors:InvokeCommandAction Command="{Binding DataContext.SelectUnselectBookCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
                                     </behaviors:EventTrigger>
                                 </behaviors:Interaction.Triggers>
                                 <StackPanel Orientation="Vertical">

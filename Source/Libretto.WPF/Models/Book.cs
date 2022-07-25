@@ -25,6 +25,13 @@ public class Book : ObservableObject
         set => SetProperty(ref authorName, value);
     }
 
+    private bool isSelected;
+    public bool IsSelected
+    {
+        get => isSelected;
+        set => SetProperty(ref isSelected, value);
+    }
+
     public Book()
     {
         id = Guid.NewGuid();
