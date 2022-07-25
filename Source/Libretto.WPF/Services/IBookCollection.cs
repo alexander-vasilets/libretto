@@ -3,7 +3,7 @@
 using System;
 using System.Collections.ObjectModel;
 
-using Libretto.WPF.Models;
+using Models;
 
 public interface IBookCollection
 {
@@ -13,4 +13,5 @@ public interface IBookCollection
     void Add(Book newBook);
     void Delete(Guid bookId);
     void DeleteAll();
+    void Update(Book updatedBook);
 }

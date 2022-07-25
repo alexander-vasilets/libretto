@@ -29,4 +29,12 @@ public class BookCollection : IBookCollection
     }
 
     public void DeleteAll() => Books.Clear();
+
+    public void Update(Book updatedBook)
+    {
+        var bookToUpdate = Books.Single(b => b.Id == updatedBook.Id);
+        int index = Books.IndexOf(bookToUpdate);
+        Books.RemoveAt(index);
+        Books.Insert(index, updatedBook);
+    }
 }

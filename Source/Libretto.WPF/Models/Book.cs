@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 [ExcludeFromCodeCoverage]
 public class Book : ObservableObject
 {
-    private Guid id = Guid.NewGuid();
+    private Guid id;
     public Guid Id => id;
 
     private string title = string.Empty;
@@ -23,5 +23,17 @@ public class Book : ObservableObject
     {
         get => authorName;
         set => SetProperty(ref authorName, value);
+    }
+
+    public Book()
+    {
+        id = Guid.NewGuid();
+    }
+
+    public Book(Book prototype)
+    {
+        id = prototype.Id;
+        title = prototype.Title;
+        authorName = prototype.AuthorName;
     }
 }
