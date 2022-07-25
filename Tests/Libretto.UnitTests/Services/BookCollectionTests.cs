@@ -63,4 +63,23 @@ public class BookCollectionTests
         // Assert
         bookCollection.Books.Should().NotContain(book);
     }
+
+    [Fact]
+    public void Update_BookMustBeUpdated()
+    {
+        // Arrange
+        IBookCollection bookCollection = new BookCollection();
+        var book = new Book() { Title = "TestBook", AuthorName = "TestAuthor" };
+        bookCollection.Add(book);
+
+        // Act
+        book.Title = "Updated";
+        book.AuthorName = "Updated";
+        bookCollection.Update(book);
+        var actualBook = bookCollection.Books.Single(b => b.Id == book.Id);
+
+        // Assert
+        bookCollection.Books.Should().Contain(book);
+        actualBook.Should().BeEquivalentTo(book);
+    }
 }
