@@ -16,7 +16,7 @@ public class Book : ObservableValidator
 
     [Required(ErrorMessage = "Title is required!")]
     [MinLength(1, ErrorMessage = "Title should be at least 1 character long!")]
-    [MaxLength(100, ErrorMessage = "Title should be not longer than 255 characters!")]
+    [MaxLength(100, ErrorMessage = "Title should be not longer than 100 characters!")]
     public string Title
     {
         get => title;
@@ -31,7 +31,7 @@ public class Book : ObservableValidator
 
     [Required(ErrorMessage = "Author name is required!")]
     [MinLength(1, ErrorMessage = "Author name should be at least 1 character long!")]
-    [MaxLength(100, ErrorMessage = "Author name should be not longer than 255 characters!")]
+    [MaxLength(100, ErrorMessage = "Author name should be not longer than 100 characters!")]
     public string AuthorName
     {
         get => authorName;

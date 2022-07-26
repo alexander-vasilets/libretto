@@ -15,5 +15,13 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         DataContext = App.Current.Services.GetService<BookViewModel>();
+
+        Loaded += OnLoad;
+    }
+
+    private void OnLoad(object sender, RoutedEventArgs e)
+    {
+        MinWidth = ActualWidth;
+        MinHeight = ActualHeight;
     }
 }

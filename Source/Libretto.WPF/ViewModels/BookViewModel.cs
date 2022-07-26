@@ -14,7 +14,7 @@ using Services;
 public class BookViewModel : ObservableObject
 {
     private readonly IBookCollection collection;
-    public ObservableCollection<Book> Books => collection.Books;
+    public ReadOnlyObservableCollection<Book> Books => collection.Books;
 
     private Book currentBook = new();
     public Book CurrentBook
@@ -82,13 +82,25 @@ public class BookViewModel : ObservableObject
         collection = bookCollection;
         collection.SeedData();
 
-        CurrentBook = new();
-        CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
+        SetCurrentBook(null);
 
         SelectUnselectBookCommand = new(book => SelectUnselectBook(book!));
-        DeleteBookCommand = new(bookId => collection.Delete(bookId));
+        DeleteBookCommand = new(DeleteBook);
         AddBookCommand = new(AddBook);
         UpdateBookCommand = new(UpdateBook);
+    }
+
+    private void SetCurrentBook(Book? book)
+    {
+        if (book == null)
+        {
+            CurrentBook = new();
+        }
+        else
+        {
+            CurrentBook = new(book);
+        }
+        CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
     }
 
     private void OnCurrentBookErrorsChanged(object? sender, System.ComponentModel.DataErrorsChangedEventArgs e)
@@ -104,8 +116,7 @@ public class BookViewModel : ObservableObject
         {
             SelectedBook = clickedBook;
             SelectedBook.IsSelected = true;
-            CurrentBook = new(SelectedBook);
-            CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
+            SetCurrentBook(SelectedBook);
             return;
         }
         // A book is selected and it is this one
@@ -113,30 +124,45 @@ public class BookViewModel : ObservableObject
         {
             SelectedBook.IsSelected = false;
             SelectedBook = null;
-            CurrentBook = new();
-            CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
+            SetCurrentBook(null);
             return;
         }
         // A book is selected but it is another book
         SelectedBook.IsSelected = false;
         SelectedBook = clickedBook;
         SelectedBook.IsSelected = true;
-        CurrentBook = new(clickedBook);
-        CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
+        SetCurrentBook(clickedBook);
+    }
+
+    private void DeleteBook(Guid bookId)
+    {
+        if (SelectedBook != null && SelectedBook.Id == bookId)
+        {
+            SelectedBook = null;
+        }
+        collection.Delete(bookId);
     }
 
     private void AddBook()
     {
         var newBook = new Book() { Title = CurrentBook.Title, AuthorName = CurrentBook.AuthorName };
         collection.Add(newBook);
-        CurrentBook = new();
-        CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
+        if (SelectedBook != null)
+        {
+            SelectedBook.IsSelected = false;
+            SelectedBook = null;
+        }
+        SetCurrentBook(null);
     }
 
     private void UpdateBook()
     {
         collection.Update(CurrentBook);
-        CurrentBook = new();
-        CurrentBook.ErrorsChanged += OnCurrentBookErrorsChanged;
+        if (SelectedBook != null)
+        {
+            SelectedBook.IsSelected = false;
+            SelectedBook = null;
+        }
+        SetCurrentBook(null);
     }
 }

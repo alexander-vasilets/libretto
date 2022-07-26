@@ -7,7 +7,7 @@ using Models;
 
 public interface IBookCollection
 {
-    ObservableCollection<Book> Books { get; }
+    ReadOnlyObservableCollection<Book> Books { get; }
 
     void SeedData();
     void Add(Book newBook);
